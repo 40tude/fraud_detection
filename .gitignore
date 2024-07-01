@@ -1,0 +1,41 @@
+secrets.ps1
+# secrets.sh
+# secrets.yaml
+
+# .aws/
+# *.aws
+# fichiers type my-keypair.pem (clé AWS)
+# *.pem
+
+# Var d'environnement docker compose
+# Voir https://app.jedha.co/course/docker-reminders-l/docker-compose-l
+# *.env 
+
+
+*.log
+
+.vscode/
+.git/
+__pycache__/
+*.pyc
+
+
+
+
+# large files Size > 100MB (warning à 50MB)
+# pas moyen de spécifier la taille dans .gitignore
+# Get-ChildItem ./ -recurse | where-object {$_.length -gt 100000000} | Sort-Object length | ft fullname, length -auto
+
+# Ajouter ci-dessous les gros fichiers listés par la commande précédente
+data.xlsx
+fraud_test.csv
+
+
+# This may help
+# 
+# Get-ChildItem -Path . -Recurse | Sort-Object Length -Descending | Select-Object FullName, Length -First 20
+# Get-ChildItem -Path . -Directory -Recurse -Force | Where-Object { $_.Name -eq ".aws" }
+# Get-ChildItem -Path . -Filter *.png -Recurse | Select-Object -ExpandProperty FullName
+# Retrouver la taille du répertoire projet - Github 5GB max
+# (Get-ChildItem . -Recurse | Measure-Object -Property Length -sum).sum/1GB
+
