@@ -32,7 +32,7 @@ from sklearn.metrics import (
 # see log_tags_parameters()
 k_Author = "Philippe"
 k_XpPhase = "Template Dev"
-k_N_Estimators = 150
+k_N_Estimators = 125
 
 
 # -----------------------------------------------------------------------------
@@ -49,17 +49,12 @@ class ModelTrainer:
     # -----------------------------------------------------------------------------
     def load_data(self):
         start_time = time.time()
-        data_train = pd.read_csv(
+        data = pd.read_csv(
             "https://lead-program-assets.s3.eu-west-3.amazonaws.com/M05-Projects/fraudTest.csv", nrows=10_000
         )
         # data = pd.read_csv("https://lead-program-assets.s3.eu-west-3.amazonaws.com/M05-Projects/fraudTest.csv")
         # for local test only
         # data = pd.read_csv("../../../data/fraud_test.csv", nrows=10_000)
-
-        data_validated = pd.read_csv("s3://fraud-bucket-202406/data/validated.csv")
-
-        data = pd.concat([data_train, data_validated], ignore_index=True)
-        logger.debug(f"Nb lines dataset : {len(data)}")
 
         # remove first col
         data = data.iloc[:, 1:]
@@ -88,10 +83,6 @@ class ModelTrainer:
 
         # shuffle est à true par défaut
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
-
-        mlflow.log_param("Train set size", len(X_train))
-        mlflow.log_param("Test set size", len(X_test))
-
         mlflow.log_metric("preprocess_data_time", round(time.time() - start_time, 2))
         logger.info(f"preprocess_data : {round(time.time() - start_time, 2)} sec.")
         return X_train, X_test, y_train, y_test
@@ -143,21 +134,6 @@ class ModelTrainer:
         logger.info(f"Rappel : {recall:.2f}")
         logger.info(f"F1-Score : {f1:.2f}")
         logger.info(f"ROC AUC Score : {roc_auc:.2f}")
-
-        # Je veux vérifier et comparer ces valeurs avec celles ci-dessus
-        tn, fp, fn, tp = conf_matrix.ravel()
-        recall1 = tp / (tp + fn)
-        precision1 = tp / (tp + fp)
-        f1_score1 = 2 * (precision1 * recall1) / (precision1 + recall1)
-        false_negative_rate1 = fn / (fn + tp)
-        roc_auc1 = roc_auc_score(y_test, y_pred)
-
-        logger.info(f"recall1 : {recall1:.2f}")
-        logger.info(f"precision1 : {precision1:.2f}")
-        logger.info(f"f1_score1 : {f1_score1:.2f}")
-        logger.info(f"false_negative_rate1 : {false_negative_rate1:.2f}")
-        logger.info(f"roc_auc1 : {roc_auc1:.2f}")
-        mlflow.log_metric("false_neg_rate", round(false_negative_rate1, 2))
 
         fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
         plt.figure()

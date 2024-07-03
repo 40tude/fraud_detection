@@ -2,7 +2,8 @@
 
 ### JEDHA Bootcamp - Data Science & Engineering - Lead - June 2024
 
-See : https://app.jedha.co/course/final-projects-l/automatic-fraud-detection-l
+* See : https://app.jedha.co/course/final-projects-l/automatic-fraud-detection-l
+* Mlflow Tracking server : https://fraud-202406-70e02a9739f2.herokuapp.com/
 
 
 ## Objectives
@@ -49,7 +50,7 @@ A Powerpoint set of slides explaining
 
 
 <p align="center">
-<img src="./assets/infra.png" alt="drawing" width="800"/>
+<img src="./assets/infra01.png" alt="drawing" width="800"/>
 <p>
 
 

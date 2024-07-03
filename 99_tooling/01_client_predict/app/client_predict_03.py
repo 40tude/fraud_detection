@@ -15,12 +15,6 @@ import requests
 from datetime import datetime, timezone
 
 
-# Pour les mails
-# import smtplib
-# from email.mime.text import MIMEText
-# from email.mime.multipart import MIMEMultipart
-
-
 # Constants
 k_MLflow_Tracking_URL = "https://fraud-202406-70e02a9739f2.herokuapp.com/"
 k_Experiments = "template-sklearn-20240630"
@@ -63,44 +57,6 @@ def get_one_transaction():
     reordered_cols = [cols[-1]] + cols[:-1]
     df = df[reordered_cols]
     return df
-
-
-# -----------------------------------------------------------------------------
-# Je le met là pour l'instant ça peut servir un jour
-# Voir qu'on recoit un df avec uniquement les 9 paramètres numériques utilisés pour les prédictions
-# Y a moyen de faire mieux
-def send_one_mail(df):
-
-    # # Configuration du serveur SMTP et des informations de connexion
-    # smtp_server = 'smtp.gmail.com'
-    # smtp_port = 587
-    # smtp_user = 'xxxx.yyyy@gmail.com'
-    # smtp_password = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-
-    # # Création de l'objet message
-    # msg = MIMEMultipart()
-    # msg['From'] = smtp_user
-    # msg['To'] = 'martine.baucour@gmail.com'
-    # msg['Subject'] = 'ALARM - Fraud detected'
-
-    # # Création du corps du message
-    # body = '15H33 - Ceci est un message texte d\'une ligne.'
-    # msg.attach(MIMEText(body, 'plain'))
-
-    # # Connexion au serveur SMTP et envoi de l'email
-    # try:
-    #     with smtplib.SMTP(smtp_server, smtp_port) as server:
-    #         server.starttls()  # Sécurise la connexion
-    #         server.login(smtp_user, smtp_password)
-    #         server.sendmail(smtp_user, 'martine.baucour@gmail.com', msg.as_string())
-    #     print("E-mail envoyé avec succès.")
-    # except Exception as e:
-    #     print(f"Erreur lors de l'envoi de l'e-mail : {e}")
-
-    print("Un mail envoyé : ")
-    print(df)
-    print()
-    return
 
 
 # -----------------------------------------------------------------------------
@@ -169,9 +125,5 @@ if __name__ == "__main__":
     for i in range(len(to_predict_df)):
         input_df = pd.DataFrame([to_predict_df.iloc[i]])
         prediction = loaded_model.predict(input_df)
-        if prediction:
-            prediction = "Fraud"
-            send_one_mail(input_df)
-        else:
-            prediction = "Not Fraud"
+        prediction = "Fraud" if prediction else "Not Fraud"
         print(f"Prediction : {prediction}")
