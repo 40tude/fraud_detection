@@ -81,6 +81,7 @@ class ModelTrainer:
         self.numeric_columns = X.select_dtypes(include="number").columns
         logger.debug(f"X numeric cols : {self.numeric_columns}")
 
+        # shuffle est à true par défaut
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
         mlflow.log_metric("preprocess_data_time", round(time.time() - start_time, 2))
         logger.info(f"preprocess_data : {round(time.time() - start_time, 2)} sec.")
