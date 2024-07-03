@@ -32,7 +32,7 @@ fraud_test.csv
 
 
 # This may help
-# 
+# Get-ChildItem -Recurse -File | Select-String -Pattern "AWS_SECRET_ACCESS_KEY" | Select-Object -ExpandProperty Path
 # Get-ChildItem -Path . -Recurse | Sort-Object Length -Descending | Select-Object FullName, Length -First 20
 # Get-ChildItem -Path . -Directory -Recurse -Force | Where-Object { $_.Name -eq ".aws" }
 # Get-ChildItem -Path . -Filter *.png -Recurse | Select-Object -ExpandProperty FullName
