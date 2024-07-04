@@ -2,6 +2,7 @@
 
 ### JEDHA Bootcamp - Data Science & Engineering - Lead - June 2024
 
+## Webliography
 * See : https://app.jedha.co/course/final-projects-l/automatic-fraud-detection-l
 * Mlflow Tracking server : https://fraud-202406-70e02a9739f2.herokuapp.com/
 
@@ -53,7 +54,45 @@ A Powerpoint set of slides explaining
 <img src="./assets/infra01.png" alt="drawing" width="800"/>
 <p>
 
+## Directories organization
+```
+├───00_mlflow_tracking_server
+│   └───assets
+├───01_images_for_model_trainers
+│   └───01_sklearn_trainer
+├───02_train_code
+│   └───01_sklearn
+│       ├───01_minimal
+│       │   ├───assets
+│       │   └───img
+│       └───02_template
+│           ├───assets
+│           └───img
+├───98_EDA
+├───99_tooling
+│   ├───01_client_predict
+│   │   ├───app
+│   │   └───assets
+│   ├───02_API_test
+│   └───03_combine_train_and validated
+├───assets
+└───data 
+```
 
+* 00_mlflow_tracking_server : everything needed to build & deploy mlflow tracking server. There is a readme.md
+* 01_images_for_model_trainers : everything needed to build docker images where the model to be trained will run. There is a readme.md
+    * 01_sklearn_trainer : 
+* 02_train_code
+    * 01_sklearn
+        * 01_minimal
+        * 02_template
+* 98_EDA : quick EDA (jupyter notebook)
+* 99_tooling
+    * 01_client_predict : demonstrates how to make a prediction using python
+    * 02_API_test : demonstrates how to get simulatated transactions with the API  
+    * 03_combine_train_and validated : demonstrates how to combine 2 dataframe : initial training dataset and a dataframe containing some additional validated data
+* assets : png, pptx
+* data : local copy of the dataset 
 
 ## Blablabla...
 
