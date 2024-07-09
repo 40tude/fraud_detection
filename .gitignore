@@ -1,6 +1,7 @@
 secrets.ps1
 # secrets.sh
 # secrets.yaml
+python.config
 
 # .aws/
 # *.aws
