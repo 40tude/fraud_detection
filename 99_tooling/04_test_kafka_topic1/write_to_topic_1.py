@@ -48,13 +48,13 @@ def fetch_and_store():
 if __name__ == "__main__":
 
     # Initialize configurations from "python.config" file
-    CONF = ccloud_lib.read_ccloud_config("python.config")
+    conf = ccloud_lib.read_ccloud_config("python.config")
 
     # Create Producer instance
-    producer_conf = ccloud_lib.pop_schema_registry_params_from_config(CONF)
+    producer_conf = ccloud_lib.pop_schema_registry_params_from_config(conf)
     producer = Producer(producer_conf)
 
     # Create topic if it doesn't already exist
-    ccloud_lib.create_topic(CONF, k_Topic)
+    ccloud_lib.create_topic(conf, k_Topic)
 
     fetch_and_store()
