@@ -19,6 +19,14 @@ Dans ce qui suit, on va donc faire 2 choses :
 <img src="./assets/img14.png" alt="drawing" width="600"/>
 <p>
 
+### C'est peut être un détail pour vous...
+
+Pour pouvoir lancer un script `.ps1` il faut que les autorisations soient accordées. Si besoin, en tant qu'Administrateur utilisez la commande ci-dessous ou l'une de ces petites soeurs. 
+
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+```
+
 On a maintenant une image minimale (il n'y a même pas Pandas ni sklearn de disponible) dans laquelle on peut faire tourner un code de training minimal.
 
 
