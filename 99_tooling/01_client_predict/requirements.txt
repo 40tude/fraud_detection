@@ -8,6 +8,9 @@ pandas
 scikit-learn 
 imblearn
 
+confluent_kafka
+avro
+
 # -----------------------------------------------------------------------------
 # Add according your needs
 # pillow              # only for the testing train.py (help to save png artifact)
