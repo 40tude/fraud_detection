@@ -5,6 +5,8 @@
 ## Webliography
 * See : https://app.jedha.co/course/final-projects-l/automatic-fraud-detection-l
 * Mlflow Tracking server : https://fraud-202406-70e02a9739f2.herokuapp.com/
+* S3 with training dataset : https://lead-program-assets.s3.eu-west-3.amazonaws.com/M05-Projects/fraudTest.csv
+* S3 with additionnal validated data for training : s3://fraud-bucket-202406/data/validated.csv
 
 
 ## Objectives
