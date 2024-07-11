@@ -6,19 +6,24 @@ import json
 import ccloud_lib # Library not installed with pip but imported from ccloud_lib.py
 import numpy as np
 import time
+import requests
+import threading
 
 # Initialize configurations from "python.config" file
 CONF = ccloud_lib.read_ccloud_config("python.config")
 TOPIC_TRANS = "topic_trans" # Topic des transactions
-# TOPIC_PREDICT = "topic_predict" # Topic des prédictions
+TOPIC_PREDICT = "topic_predict" # Topic des prédictions
+
+# API transactions url
+url = "https://real-time-payments-api.herokuapp.com/current-transactions"
 
 # Create Producer instance
 producer_conf = ccloud_lib.pop_schema_registry_params_from_config(CONF)
 producer = Producer(producer_conf)
 
-# Create topic if it doesn't already exist
+# Create topics if they do not already exist
 ccloud_lib.create_topic(CONF, TOPIC_TRANS)
-# ccloud_lib.create_topic(CONF, TOPIC_PREDICT)
+ccloud_lib.create_topic(CONF, TOPIC_PREDICT)
 
 
 delivered_records = 0
@@ -36,34 +41,39 @@ def acked(err, msg):
         print("Produced record to topic {} partition [{}] @ offset {}"
                 .format(msg.topic(), msg.partition(), msg.offset()))
 
-try:
-    while True:
-        # record_key = "weather"
-        # record_value = json.dumps(
-        #     {
-        #         "degrees_in_celsion": np.random.randint(10, 40)
-        #     }
-        # )
-        # print("Producing record: {}\t{}".format(record_key, record_value))
-        
-        record_key = "transaction"
-        record_value = json.dumps(
-            {
-                "value": np.random.randint(10, 40)
-            }
-        )
-        # Send data to transactions Topic
-        producer.produce(
+def task():
+    response = requests.get(url)
+    data = response.json()
+
+    if isinstance(data, str):
+        data = json.loads(data)
+   
+    record_key = "transaction"
+    record_value = json.dumps(
+        {
+            "data": data
+        }
+    )
+    # Send data to transactions Topic
+    producer.produce(
             TOPIC_TRANS,
             key=record_key,
             value=record_value,
             on_delivery=acked
         )
-        # p.poll() serves delivery reports (on_delivery)
-        # from previous produce() calls thanks to acked callback
-        producer.poll(0)
-        time.sleep(0.01)
-except KeyboardInterrupt:
-    pass
-finally:
-    producer.flush() # Finish producing the latest event before stopping the whole script
+
+    producer.poll(0)
+
+
+def periodic_task(interval, func):
+    try:
+        while True:
+            func()
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        producer.flush() # Finish producing the latest event before stopping the whole script
+
+t = threading.Thread(target=periodic_task, args=(20, task))
+t.start()

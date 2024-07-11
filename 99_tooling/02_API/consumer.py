@@ -5,10 +5,21 @@ from confluent_kafka import Consumer
 import json
 import ccloud_lib
 import time
+import mlflow
+import sklearn
+import pandas as pd
+from datetime import datetime, timezone
 
 # Initialize configurations from "python.config" file
 CONF = ccloud_lib.read_ccloud_config("python.config")
 TOPIC_TRANS = "topic_trans"
+TOPIC_PREDICT = "topic_predict"
+
+# URL MLFlow
+k_MLflow_Tracking_URL = "https://fraud-202406-70e02a9739f2.herokuapp.com/"
+k_Logged_Model = "runs:/1fcd6f0ced3b491fa67f67f4d16f8712/model"
+mlflow.set_tracking_uri(k_MLflow_Tracking_URL)
+loaded_model = mlflow.sklearn.load_model(k_Logged_Model)
 
 # Create Consumer instance
 # 'auto.offset.reset=earliest' to start reading from the beginning of the
@@ -39,10 +50,43 @@ try:
             record_key = msg.key()
             record_value = msg.value()
             data = json.loads(record_value)
-            # weather = data["degrees_in_celsion"]
-            print(msg.offset())
-            print(f"<<<{data}>>>")
-            time.sleep(0.5) # Wait half a second
+   
+            columns = data['data']["columns"]
+            index = data['data']["index"]
+            rows = data['data']["data"]
+
+            # Convertir le dictionnaire en DataFrame
+            df = pd.DataFrame(rows, columns=columns)
+
+            # ! DANGER - 17 is hard coded
+            col = df["current_time"]
+            df.insert(17, "unix_time", col)
+
+            # convert to date string
+            df.rename(columns={"current_time": "trans_date_trans_time"}, inplace=True)
+            timestamp = df["trans_date_trans_time"].iloc[0]
+            date = datetime.fromtimestamp(timestamp / 1000, tz=timezone.utc)
+            str_date = date.strftime("%Y-%m-%d %H:%M:%S")
+
+            df["trans_date_trans_time"] = df["trans_date_trans_time"].astype(str)
+            df.at[index[0], "trans_date_trans_time"] = str_date
+
+            # reorder columns
+            cols = df.columns.tolist()
+            reordered_cols = [cols[-1]] + cols[:-1]
+            df = df[reordered_cols]
+
+            # Ne garde que les colonnes attendues pour faire tourner le modèle (vire aussi la colonne is_fraud)
+            model_columns = loaded_model.feature_names_in_ if hasattr(loaded_model, "feature_names_in_") else []
+            prediction = loaded_model.predict(df[model_columns])
+            print("Prediction : ", prediction)
+            
+            # Add new column 'prediction'
+            df['prediction'] = prediction
+
+            # TODO : write data into TOPIC_PREDICT 
+           # producer.produce
+
 except KeyboardInterrupt:
     pass
 finally:
