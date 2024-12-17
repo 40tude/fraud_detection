@@ -2,6 +2,9 @@
 
 ### JEDHA Bootcamp - Data Science & Engineering - Lead - June 2024
 
+## **IMPORTANT** Update
+Please make sure to visit the [**version II**](https://github.com/40tude/fraud_detection_2) of the fraud_detection project.
+
 ## Webliography
 * See : https://app.jedha.co/course/final-projects-l/automatic-fraud-detection-l
 * Mlflow Tracking server : https://fraud-202406-70e02a9739f2.herokuapp.com/
